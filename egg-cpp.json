@@ -10,7 +10,7 @@
     "description": "C++ development environment with support for Git integration and CMake projects.",
     "features": null,
     "docker_images": {
-        "C++ Development": ""
+        "C++ Development": "ghcr.io/klldtest/pterodactyl-cpp:main"
     },
     "file_denylist": [],
     "startup": "bash /start.sh",
