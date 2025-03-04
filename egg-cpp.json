@@ -1,0 +1,132 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2023-10-20T12:00:00Z",
+    "name": "C++",
+    "author": "klld@klldFN.xyz",
+    "description": "C++ development environment with support for Git integration and CMake projects.",
+    "features": null,
+    "docker_images": {
+        "C++ Development": ""
+    },
+    "file_denylist": [],
+    "startup": "bash /start.sh",
+    "config": {
+        "files": "{}",
+        "startup": "{\r\n    \"done\": [\r\n        \"Running\",\r\n        \"Started\",\r\n        \"Listening\",\r\n        \"Ready\"\r\n    ]\r\n}",
+        "logs": "{\r\n    \"custom\": false,\r\n    \"location\": \"logs/latest.log\"\r\n}",
+        "stop": "^C"
+    },
+    "scripts": {
+        "installation": {
+            "script": null,
+            "container": "alpine:latest",
+            "entrypoint": "ash"
+        }
+    },
+    "variables": [
+        {
+            "name": "GITHUB USERNAME",
+            "description": "Github username or email",
+            "env_variable": "GITHUB_USERNAME",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string|max:50",
+            "field_type": "text"
+        },
+        {
+            "name": "GITHUB TOKEN",
+            "description": "Github personal access token. Get one from https://github.com/settings/tokens",
+            "env_variable": "GITHUB_TOKEN",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string|max:100",
+            "field_type": "text"
+        },
+        {
+            "name": "Repository URL",
+            "description": "Github repository URL (https://github.com/username/repo.git)",
+            "env_variable": "GITHUB_REPO",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string|max:100",
+            "field_type": "text"
+        },
+        {
+            "name": "Repository Branch",
+            "description": "The Git branch to use",
+            "env_variable": "GITHUB_BRANCH",
+            "default_value": "main",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:20",
+            "field_type": "text"
+        },
+        {
+            "name": "Auto Pull Repository",
+            "description": "Automatically pull from Git repository on startup",
+            "env_variable": "GIT_AUTO_PULL",
+            "default_value": "FALSE",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|in:FALSE,TRUE",
+            "field_type": "text"
+        },
+        {
+            "name": "Auto Build",
+            "description": "Automatically build the C++ application on startup (using CMake or Makefile if available)",
+            "env_variable": "AUTO_BUILD",
+            "default_value": "TRUE",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|in:FALSE,TRUE",
+            "field_type": "text"
+        },
+        {
+            "name": "Shell Access",
+            "description": "Enable shell access before starting the application",
+            "env_variable": "SHELL_ACCESS",
+            "default_value": "FALSE",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|in:FALSE,TRUE",
+            "field_type": "text"
+        },
+        {
+            "name": "Source File",
+            "description": "Main source file to compile (if no CMake/Makefile is present)",
+            "env_variable": "SOURCE_FILE",
+            "default_value": "main.cpp",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string|max:100",
+            "field_type": "text"
+        },
+        {
+            "name": "Compiler Flags",
+            "description": "Additional compiler flags to use when building",
+            "env_variable": "COMPILER_FLAGS",
+            "default_value": "-std=c++17 -O2",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string|max:200",
+            "field_type": "text"
+        },
+        {
+            "name": "Startup Script",
+            "description": "The command to run your application",
+            "env_variable": "STARTUP_SCRIPT_1",
+            "default_value": "./app",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:100",
+            "field_type": "text"
+        }
+    ]
+}
