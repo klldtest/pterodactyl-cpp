@@ -10,12 +10,12 @@
     "description": "C++ development environment with support for Git integration and CMake projects.",
     "features": null,
     "docker_images": {
-        "C++ Development": "ghcr.io/klldtest/pterodactyl-cpp:main"
+        "C++ Development": "ghcr.io/klldtest/pterodactyl-cpp:latest"
     },
     "file_denylist": [],
     "startup": "bash /start.sh",
     "config": {
-        "files": "{}",
+        "files": "{\r\n    \"./\": {\r\n        \"parser\": \"file\",\r\n        \"find\": {\r\n            \"app\": null\r\n        }\r\n    }\r\n}",
         "startup": "{\r\n    \"done\": [\r\n        \"Running\",\r\n        \"Started\",\r\n        \"Listening\",\r\n        \"Ready\"\r\n    ]\r\n}",
         "logs": "{\r\n    \"custom\": false,\r\n    \"location\": \"logs/latest.log\"\r\n}",
         "stop": "^C"
