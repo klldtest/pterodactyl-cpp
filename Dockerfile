@@ -39,7 +39,9 @@ RUN apt-get update \
 
 # Set up a user
 RUN useradd -m -d /home/container -s /bin/bash container
-RUN ln -s /usr/local/bin/cmake /usr/bin/cmake
+
+# Remove the problematic ln command - cmake is already available in PATH
+# since we installed it with apt-get
 
 # Copy start script
 COPY ./start.sh /start.sh
