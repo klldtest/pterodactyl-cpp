@@ -15,6 +15,7 @@ RUN apt-get update \
         gcc \
         git \
         gnupg \
+        iproute2 \
         jq \
         libboost-all-dev \
         libssl-dev \
@@ -39,9 +40,6 @@ RUN apt-get update \
 
 # Set up a user
 RUN useradd -m -d /home/container -s /bin/bash container
-
-# Remove the problematic ln command - cmake is already available in PATH
-# since we installed it with apt-get
 
 # Copy start script
 COPY ./start.sh /start.sh
