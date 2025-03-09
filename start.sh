@@ -13,7 +13,8 @@ if [ -z "${STARTUP_SCRIPT_1}" ]; then
 fi
 
 # Make internal Docker IP address available to processes.
-export INTERNAL_IP=$(ip route get 1 | awk '{print $(NF-2);exit}')
+# Just use localhost as fallback to avoid errors
+export INTERNAL_IP="127.0.0.1"
 
 # Check if Git pull is enabled
 if [ "${GIT_AUTO_PULL}" == "TRUE" ] || [ "${GIT_AUTO_PULL}" == "true" ]; then
@@ -48,27 +49,25 @@ if [ "${GIT_AUTO_PULL}" == "TRUE" ] || [ "${GIT_AUTO_PULL}" == "true" ]; then
     fi
 fi
 
-# Check if auto build is enabled
-if [ "${AUTO_BUILD}" == "TRUE" ] || [ "${AUTO_BUILD}" == "true" ]; then
+# Check if AUTO_BUILD is enabled
+if [ "${AUTO_BUILD}" = "1" ]; then
     echo "Auto Build enabled. Building C++ application..."
     
-    # Check for CMake
-    if [ -f "CMakeLists.txt" ]; then
-        echo "CMake build system detected"
-        mkdir -p build && cd build
-        cmake ..
-        make -j$(nproc)
-        cd ..
-    # Check for Makefile
-    elif [ -f "Makefile" ]; then
-        echo "Makefile detected"
-        make -j$(nproc)
-    # Basic g++ compilation
-    elif [ -n "${SOURCE_FILE}" ]; then
-        echo "Compiling source file: ${SOURCE_FILE}"
-        g++ ${SOURCE_FILE} -o app ${COMPILER_FLAGS}
+    # Check if main.cpp exists
+    if [ -f "main.cpp" ]; then
+        echo "Compiling source file: main.cpp"
+        g++ -std=c++17 -o app main.cpp
+        
+        # Check if build was successful
+        if [ $? -eq 0 ]; then
+            echo "Build successful. Running application..."
+            ./app
+        else
+            echo "Build failed. Please check your code."
+        fi
     else
-        echo "No recognized build system found. Please provide SOURCE_FILE or create a CMakeLists.txt/Makefile."
+        echo "Error: main.cpp not found."
+        echo "Please create a main.cpp file or disable Auto Build."
     fi
 fi
 
@@ -81,6 +80,17 @@ fi
 # Replace Startup Variables
 MODIFIED_STARTUP=$(echo ${STARTUP_SCRIPT_1} | sed -e 's/{{/${/g' -e 's/}}/}/g')
 echo ":/home/container$ ${MODIFIED_STARTUP}"
+
+# Ensure app exists before trying to run it
+if [[ "${MODIFIED_STARTUP}" == "./app" || "${MODIFIED_STARTUP}" == "app" ]]; then
+    if [ ! -f "./app" ]; then
+        echo "ERROR: The app executable does not exist. Please check your build process."
+        exit 1
+    fi
+    
+    # Make sure it's executable
+    chmod +x ./app
+fi
 
 # Run the Server
 eval ${MODIFIED_STARTUP}

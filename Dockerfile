@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM debian:12
 
 LABEL author="klld" maintainer="klld@klldFN.xyz"
 
@@ -15,6 +15,7 @@ RUN apt-get update \
         gcc \
         git \
         gnupg \
+        iproute2 \
         jq \
         libboost-all-dev \
         libssl-dev \
@@ -40,11 +41,9 @@ RUN apt-get update \
 # Set up a user
 RUN useradd -m -d /home/container -s /bin/bash container
 
-# Remove the problematic ln command - cmake is already available in PATH
-# since we installed it with apt-get
-
-# Copy start script
+# Copy start script and default C++ file
 COPY ./start.sh /start.sh
+COPY ./main.cpp /home/container/main.cpp
 RUN chmod +x /start.sh
 
 USER container
