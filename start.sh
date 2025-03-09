@@ -49,26 +49,30 @@ if [ "${GIT_AUTO_PULL}" == "TRUE" ] || [ "${GIT_AUTO_PULL}" == "true" ]; then
     fi
 fi
 
-# Check if AUTO_BUILD is enabled
-if [ "${AUTO_BUILD}" = "1" ]; then
-    echo "Auto Build enabled. Building C++ application..."
-    
-    # Check if main.cpp exists
+# Function to build the application
+build_app() {
     if [ -f "main.cpp" ]; then
         echo "Compiling source file: main.cpp"
         g++ -std=c++17 -o app main.cpp
         
-        # Check if build was successful
         if [ $? -eq 0 ]; then
-            echo "Build successful. Running application..."
-            ./app
+            echo "Build successful."
+            chmod +x ./app
+            return 0
         else
             echo "Build failed. Please check your code."
+            return 1
         fi
     else
         echo "Error: main.cpp not found."
-        echo "Please create a main.cpp file or disable Auto Build."
+        return 1
     fi
+}
+
+# Check if AUTO_BUILD is enabled
+if [ "${AUTO_BUILD}" = "1" ]; then
+    echo "Auto Build enabled. Building C++ application..."
+    build_app
 fi
 
 # Shell access if enabled
@@ -81,11 +85,27 @@ fi
 MODIFIED_STARTUP=$(echo ${STARTUP_SCRIPT_1} | sed -e 's/{{/${/g' -e 's/}}/}/g')
 echo ":/home/container$ ${MODIFIED_STARTUP}"
 
-# Ensure app exists before trying to run it
+# Check if we need to run the app and make sure it exists
 if [[ "${MODIFIED_STARTUP}" == "./app" || "${MODIFIED_STARTUP}" == "app" ]]; then
     if [ ! -f "./app" ]; then
-        echo "ERROR: The app executable does not exist. Please check your build process."
-        exit 1
+        echo "Warning: The app executable does not exist. Attempting to build it now..."
+        if build_app; then
+            echo "Running the newly built app..."
+        else
+            echo "ERROR: Could not build the app. Please ensure main.cpp exists and is valid."
+            echo "Creating a simple default main.cpp file that you can modify later..."
+            cat > main.cpp << 'EOL'
+#include <iostream>
+
+int main() {
+    std::cout << "Hello from Pterodactyl C++ container!" << std::endl;
+    std::cout << "This is a default program. Edit main.cpp to create your own application." << std::endl;
+    return 0;
+}
+EOL
+            echo "Building the default application..."
+            build_app || { echo "ERROR: Could not build default app. Something is wrong with the environment."; exit 1; }
+        fi
     fi
     
     # Make sure it's executable
