@@ -16,6 +16,7 @@ RUN apt-get update \
         git \
         gnupg \
         iproute2 \
+        iproute2 \
         jq \
         libboost-all-dev \
         libssl-dev \
